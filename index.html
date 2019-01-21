@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>Animal Buttons</title>
+</head>
+
+<body>
+
+    <div id="animal-buttons"></div>
+	<!--
+  <button data-animal="cat">meow</button>
+  <button data-animal="dog">woof</button>
+  <button data-animal="bird">chirp</button>
+	-->
+	<div>
+      <label for="animal-input">Add an Animal:</label>
+      <input type="text" id="animal-input">
+	  <br />
+	  <label for="sound-input">What sound does it make?</label>
+      <input type="text" id="sound-input">
+      <br>
+      <button id="add-animal">Add an Animal!</button>
+	</div>
+	
+  <div id="images">
+  </div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script type="text/javascript">
+  
+	var animals = [
+		{
+			"name":"cat", "sound":"meow"
+		}
+		,
+		{
+			"name":"dog", "sound":"woof"
+		}
+	];
+	
+	$("#add-animal").on("click", function(event) {
+		var name = $("#animal-input").val().trim();
+		var sound = $("#sound-input").val().trim();
+		var newAnimal = {
+			"name":name, "sound":sound
+		};
+		animals.push(newAnimal);
+		renderButtons();
+	});
+	
+	
+	function toggleAnimation() {
+	  var state = $(this).attr("data-state");
+	  if (state=="still") {
+		$(this).attr("src", $(this).attr("data-animate"));
+		$(this).attr("data-state", "animate");
+	  } else {
+		$(this).attr("src", $(this).attr("data-still"));
+		$(this).attr("data-state", "still");
+	  }
+	}	
+	
+	function processGiphyResults(response) {
+		console.log(response);
+		var results = response.data;
+		console.log(results);
+		results.forEach(function(result) {
+			var url_still = result.images.fixed_height_still.url;
+			var url_animated = result.images.fixed_height.url;
+			var img = $("<img>");
+			img.attr("src", url_still);
+			img.attr("data-still", url_still);
+			img.attr("data-animate", url_animated);
+			img.attr("data-state", "still");
+			$("#images").append(img);
+			img.on("click", toggleAnimation);
+			var p = $("<p>").text("Rating: " + result.rating);
+			$("#images").append(p);
+		}) 
+	}
+	
+	function clickedButton() {
+		var animal = $(this).attr("data-animal");
+		var queryURL = "https://api.giphy.com/v1/gifs/search?q=" + animal + "&api_key=dc6zaTOxFJmzC&limit=10&rating=pg-13";
+		$("#images").empty();
+		// Run an ajax call that then runs processGiphyResults on whatever results are returned
+		$.ajax({
+			url: queryURL,
+			method: "GET"
+		}).then(processGiphyResults);
+	}
+
+	function renderButtons() {
+		$("#animal-buttons").empty();
+		animals.forEach(function(animal) {
+			var btn = $("<button>");
+			btn.text(animal.sound);
+			btn.attr("data-animal", animal.name);
+			// Add the clickedButton function to each button here:
+			btn.on("click", clickedButton);
+			$("#animal-buttons").append(btn);
+		});
+	}
+	renderButtons();
+  
+  
+    $("button")
+  </script>
+</body>
+
+</html>
