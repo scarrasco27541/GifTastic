@@ -29,6 +29,8 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
   <script type="text/javascript">
   
+	var giphyKey = "m8W4kJQ7eeJWY6hmo636zLKNw0BIJOZF";
+  
 	var animals = [
 		{
 			"name":"cat", "sound":"meow"
@@ -82,7 +84,7 @@
 	
 	function clickedButton() {
 		var animal = $(this).attr("data-animal");
-		var queryURL = "https://api.giphy.com/v1/gifs/search?q=" + animal + "&api_key=dc6zaTOxFJmzC&limit=10&rating=pg-13";
+		var queryURL = "https://api.giphy.com/v1/gifs/search?q=" + animal + "&api_key="+giphyKey+"&limit=10&rating=pg-13";
 		$("#images").empty();
 		// Run an ajax call that then runs processGiphyResults on whatever results are returned
 		$.ajax({
